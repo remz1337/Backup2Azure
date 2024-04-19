@@ -1,5 +1,38 @@
 #!/bin/bash
 
+function validate_env(){
+  if [ -z "$account_name" ]; then
+    echo "Missing account_name environment variable"
+    exit
+  fi
+  if [ -z "$container_name" ]; then
+    echo "Missing container_name environment variable"
+    exit
+  fi
+  if [ -z "$sp_app_id" ]; then
+    echo "Missing sp_app_id environment variable"
+    exit
+  fi
+  if [ -z "$sp_password" ]; then
+    echo "Missing sp_password environment variable"
+    exit
+  fi
+  if [ -z "$sp_tenant_id" ]; then
+    echo "Missing sp_tenant_id environment variable"
+    exit
+  fi
+  if [ -z "$email" ]; then
+    echo "Missing email environment variable"
+    exit
+  fi
+}
+
+
+validate_env
+
+exit
+#WIP, haven't tested past this
+
 logfile="log.txt"
 
 echo "Uploading backups..." > $logfile
