@@ -35,25 +35,8 @@ function validate_env(){
   fi
 }
 
-
 validate_env
-
-exit
-#WIP, haven't tested past this
-
-logfile="/var/log/backup2azure.log"
-
 echo "Uploading backups..."
-
-# account_name="XXX"
-# container_name="XXX"
-# sp_app_id="XXX"
-# sp_password="XXX"
-# sp_tenant_id="XXX"
-# email="XXX"
-# #search_dir=/mnt/pve/backup/dump
-# search_dir="XXX"
-# tier="XXX" #HOT,COLD,ARCHIVE
 
 #file_pattern=vzdump-*.tar.zst
 #*.tar.zst for CT and pve host backups
@@ -62,7 +45,7 @@ pve_config_file_pattern=pve-host*.zst
 backups_file_pattern=vzdump*.zst
 #after=$(date -u --date="90 days ago" +"%Y-%m-%dT%H:%M:%SZ")
 
-
+#Measure upload time
 start=$(date +%s)
 
 #Token expires after 90 of inactivity. Use a different scheduled (monthly) job to keep login alive
@@ -95,10 +78,8 @@ Job time: $elapsed
 END
 )
 
-
+logfile="/var/log/backup2azure.log"
 #Confirm upload
 mail -A $logfile -s "[Homelab] Offsite backup completed" "$email" <<< "$body"
 
-#rm $logfile
-
-echo "Done"
+echo "Done uploading backups"
