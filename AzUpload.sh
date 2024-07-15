@@ -61,11 +61,23 @@ echo "Starting upload of PVE host config..."
 }
 
 echo "Starting upload of backups..."
-{ # try
-    az storage blob upload-batch -d $container_name --account-name $account_name --auth-mode login -s $search_dir --pattern $backups_file_pattern --tier $tier --overwrite false
-} || { # catch
+# { # try
+    # az storage blob upload-batch -d $container_name --account-name $account_name --auth-mode login -s $search_dir --pattern $backups_file_pattern --tier $tier --overwrite false
+# } || { # catch
+    # echo "Exception while uploading backups."
+# }
+
+# Implement a retry mechanism. Upload may fail if a backup file disappear between the moment the command is launched and the moment the specific file is accessed
+# Example : Total uploads of all backups takes 2 days and one of the machine is backed up every day (and only latest backup is kept).
+n=0
+until [ "$n" -ge 3 ]
+do
+#    command && break  # substitute your command here
+    az storage blob upload-batch -d $container_name --account-name $account_name --auth-mode login -s $search_dir --pattern $backups_file_pattern --tier $tier --overwrite false && break
     echo "Exception while uploading backups."
-}
+    n=$((n+1))
+    sleep 5
+done
 
 end=$(date +%s)
 seconds=$(($end-$start))
