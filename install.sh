@@ -14,13 +14,13 @@ cp AzUpload.sh /opt/Backup2Azure/AzUpload.sh
 cat <<EOF >/etc/systemd/system/backup2azure.timer
 [Unit]
 Description=Backup2Azure timer
-Requires=backup2azure.service
 
 [Timer]
 Unit=backup2azure.service
 #Every 3 months
 #OnCalendar=quarterly
 OnCalendar=Mon 02,05,08,11-01..07 00:00:00
+Persistent=true
 
 [Install]
 WantedBy=timers.target
@@ -40,7 +40,7 @@ StandardOutput=truncate:/var/log/backup2azure.log
 StandardError=truncate:/var/log/backup2azure.log
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=backup2azure.timer
 EOF
 
 systemctl enable -q --now backup2azure.timer
@@ -54,6 +54,7 @@ Requires=azlogin.service
 [Timer]
 Unit=azlogin.service
 OnCalendar=monthly
+Persistent=true
 
 [Install]
 WantedBy=timers.target
